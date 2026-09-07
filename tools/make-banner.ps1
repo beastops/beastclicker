@@ -129,27 +129,6 @@ for ($i = 0; $i -lt $total; $i++) { $frames.Add((New-BannerFrame $i $total)) }
 Write-Host "encoding..."
 $r = Write-AnimatedGif -Frames $frames -Path $Out -DelayMs ([int](1000 / $Fps))
 
-# GitHub's social preview has to be a static 1280x640 image. A GIF will not
-# animate in a link preview, so render one frame of the banner onto that canvas
-# rather than pointing the setting at the animation.
-$card = New-Object System.Drawing.Bitmap 1280, 640
-$cg = [System.Drawing.Graphics]::FromImage($card)
-$cg.SmoothingMode = $D::AntiAlias
-$cg.InterpolationMode = [System.Drawing.Drawing2D.InterpolationMode]::HighQualityBicubic
-$cardRect = New-Object System.Drawing.Rectangle 0, 0, 1280, 640
-$cardBg = New-Object System.Drawing.Drawing2D.LinearGradientBrush(
-    $cardRect, (& $rgb 74 137 246), (& $rgb 30 78 190),
-    [System.Drawing.Drawing2D.LinearGradientMode]::ForwardDiagonal)
-$cg.FillRectangle($cardBg, $cardRect); $cardBg.Dispose()
-
-$peak = New-BannerFrame ([int]($total * 0.86)) $total
-$sw = 1280; $sh = [int](1280 * $Height / $Width)
-$cg.DrawImage($peak, 0, [int]((640 - $sh) / 2), $sw, $sh)
-$peak.Dispose(); $cg.Dispose()
-$card.Save((Join-Path $PSScriptRoot '..\docs\social-preview.png'), [System.Drawing.Imaging.ImageFormat]::Png)
-$card.Dispose()
-Write-Host 'wrote docs/social-preview.png (1280x640, upload in repo Settings)'
-
 foreach ($f in $frames) { $f.Dispose() }
 $shotImg.Dispose()
 foreach ($o in @($fontTitle, $fontTag, $fontBig, $fontUnit, $fontPill, $white, $soft, $dim, $mint)) { $o.Dispose() }

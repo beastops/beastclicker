@@ -176,7 +176,8 @@ dotnet publish src/BeastClicker -c Release -r win-x64 --self-contained true \
   -p:IncludeNativeLibrariesForSelfExtract=true -o dist-standalone
 ```
 
-Scripts under `tools/` regenerate the icon, the README artwork and the MSIX.
+Scripts under `tools/` regenerate the icon, the README artwork, the social card and
+the MSIX.
 
 ## Before you use it
 
