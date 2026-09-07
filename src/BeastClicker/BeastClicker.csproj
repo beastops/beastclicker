@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <AssemblyName>BeastClicker</AssemblyName>
+    <RootNamespace>BeastClicker</RootNamespace>
+    <Platforms>x64</Platforms>
+    <PlatformTarget>x64</PlatformTarget>
+    <!-- Coordinates must be real pixels on scaled displays, so opt into
+         per-monitor DPI awareness rather than letting Windows virtualise us. -->
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
+    <ApplicationIcon>Assets\app.ico</ApplicationIcon>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Metadata">
+    <Version>3.1.0</Version>
+    <Product>Beast Clicker</Product>
+    <AssemblyTitle>Beast Clicker</AssemblyTitle>
+    <Description>A precise, low-overhead auto clicker for Windows.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Embedded as well as stamped onto the exe, so the window and taskbar icon
+         are available at runtime and not only to Explorer. -->
+    <Resource Include="Assets\app.ico" />
+  </ItemGroup>
+
+</Project>

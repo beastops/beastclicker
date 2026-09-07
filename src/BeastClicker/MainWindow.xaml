@@ -1,0 +1,188 @@
+<Window x:Class="BeastClicker.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Beast Clicker" Height="640" Width="540"
+        ResizeMode="CanMinimize" WindowStartupLocation="CenterScreen"
+        Icon="Assets/app.ico"
+        Background="{StaticResource Canvas}"
+        FontFamily="Segoe UI" TextOptions.TextFormattingMode="Display"
+        UseLayoutRounding="True" SnapsToDevicePixels="True">
+
+  <DockPanel>
+
+    <!-- ============================ status bar =========================== -->
+    <Border DockPanel.Dock="Bottom" BorderThickness="0,1,0,0" Padding="14,7"
+            BorderBrush="{StaticResource Hairline}" Background="{StaticResource Bar}">
+      <Grid>
+        <TextBlock x:Name="LblState" Text="Stopped" FontSize="11.5"/>
+        <TextBlock x:Name="CpsPreview" Text="40.0 clicks/sec" HorizontalAlignment="Center"
+                   FontSize="11.5"/>
+        <TextBlock x:Name="LblStats" Text="0 clicks" HorizontalAlignment="Right"
+                   FontSize="11.5"/>
+      </Grid>
+    </Border>
+
+    <!-- ========================= primary actions ========================= -->
+    <!-- Its own bounded region rather than leftover white space, and a strict
+         2x2 grid so all four buttons share both edges. The checkbox gets its own
+         line: sitting it beside a button left the two rows ending at different
+         right edges. -->
+    <Border DockPanel.Dock="Bottom" Padding="14,12,14,14"
+            Background="{StaticResource Surface}" BorderBrush="{StaticResource Hairline}"
+            BorderThickness="0,1,0,0">
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*"/><ColumnDefinition Width="10"/><ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="Auto"/>
+          <RowDefinition Height="9"/>
+          <RowDefinition Height="Auto"/>
+          <RowDefinition Height="8"/>
+          <RowDefinition Height="Auto"/>
+          <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <CheckBox x:Name="ChkTop" Grid.Row="0" Grid.ColumnSpan="3"
+                  Content="Always on top" Click="ChkTop_Click"/>
+
+        <Button x:Name="BtnStart" Grid.Row="2" Grid.Column="0" Content="Start"
+                Style="{StaticResource GoButton}" Click="BtnStart_Click"/>
+        <Button x:Name="BtnStop"  Grid.Row="2" Grid.Column="2" Content="Stop"
+                Style="{StaticResource StopButton}" Click="BtnStop_Click" IsEnabled="False"/>
+
+        <Button x:Name="BtnSave"  Grid.Row="4" Grid.Column="0" Content="Save settings"
+                Click="BtnSave_Click"/>
+        <Button x:Name="BtnReset" Grid.Row="4" Grid.Column="2" Content="Reset settings"
+                Click="BtnReset_Click"/>
+
+        <TextBlock x:Name="LblWarn" Grid.Row="5" Grid.ColumnSpan="3" Margin="0,10,0,0"
+                   TextWrapping="Wrap" FontSize="11.5" Foreground="#A5453F" Visibility="Collapsed"/>
+      </Grid>
+    </Border>
+
+    <!-- ============================== settings ========================== -->
+    <StackPanel Margin="11,10,11,4">
+
+      <!-- interval: every field is the same fixed width so they align down the
+           row instead of stretching to fit labels of different lengths -->
+      <GroupBox Header="Click interval">
+        <Grid HorizontalAlignment="Left">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="50"/><ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="50"/><ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="50"/><ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="50"/><ColumnDefinition Width="Auto"/>
+          </Grid.ColumnDefinitions>
+          <TextBox   x:Name="TbHours"   Grid.Column="0"/>
+          <TextBlock Grid.Column="1" Text="hours"        Margin="6,0,14,0"/>
+          <TextBox   x:Name="TbMinutes" Grid.Column="2"/>
+          <TextBlock Grid.Column="3" Text="minutes"      Margin="6,0,14,0"/>
+          <TextBox   x:Name="TbSeconds" Grid.Column="4"/>
+          <TextBlock Grid.Column="5" Text="seconds"      Margin="6,0,14,0"/>
+          <TextBox   x:Name="TbMillis"  Grid.Column="6"/>
+          <TextBlock Grid.Column="7" Text="milliseconds" Margin="6,0,0,0"/>
+        </Grid>
+      </GroupBox>
+
+      <!-- repeat + options -->
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*"/><ColumnDefinition Width="10"/><ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <GroupBox Grid.Column="0" Header="Click repeat">
+          <StackPanel>
+            <RadioButton x:Name="RbInfinite" Content="Repeat until stopped"
+                         GroupName="rep" IsChecked="True" Margin="0,0,0,7"/>
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/><ColumnDefinition Width="56"/>
+                <ColumnDefinition Width="Auto"/>
+              </Grid.ColumnDefinitions>
+              <RadioButton x:Name="RbFixed" Grid.Column="0" GroupName="rep" Content="Repeat"/>
+              <TextBox x:Name="TbRepeat" Grid.Column="1" Margin="7,0,0,0"/>
+              <TextBlock Grid.Column="2" Text="times" Margin="7,0,0,0"/>
+            </Grid>
+          </StackPanel>
+        </GroupBox>
+
+        <!-- label column is fixed so both dropdowns share one left edge -->
+        <GroupBox Grid.Column="2" Header="Click options">
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="84"/><ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+              <RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="Mouse button"/>
+            <ComboBox  x:Name="CbButton" Grid.Row="0" Grid.Column="1" SelectedIndex="0">
+              <ComboBoxItem>Left</ComboBoxItem>
+              <ComboBoxItem>Right</ComboBoxItem>
+              <ComboBoxItem>Middle</ComboBoxItem>
+            </ComboBox>
+            <TextBlock Grid.Row="1" Grid.Column="0" Text="Click type" Margin="0,8,0,0"/>
+            <ComboBox  x:Name="CbType" Grid.Row="1" Grid.Column="1" Margin="0,8,0,0" SelectedIndex="0">
+              <ComboBoxItem>Single</ComboBoxItem>
+              <ComboBoxItem>Double</ComboBoxItem>
+            </ComboBox>
+          </Grid>
+        </GroupBox>
+      </Grid>
+
+      <!-- position -->
+      <GroupBox Header="Click position">
+        <StackPanel>
+          <RadioButton x:Name="RbCurrent" Content="Current cursor position"
+                       GroupName="pos" IsChecked="True" Margin="0,0,0,7"/>
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="Auto"/>
+              <ColumnDefinition Width="Auto"/><ColumnDefinition Width="64"/>
+              <ColumnDefinition Width="Auto"/><ColumnDefinition Width="64"/>
+              <ColumnDefinition Width="*"/>
+              <ColumnDefinition Width="106"/>
+            </Grid.ColumnDefinitions>
+            <RadioButton x:Name="RbFixedPos" Grid.Column="0" GroupName="pos" Content="Fixed point"/>
+            <TextBlock Grid.Column="1" Text="X" Margin="16,0,6,0"/>
+            <TextBox   x:Name="TbX" Grid.Column="2"/>
+            <TextBlock Grid.Column="3" Text="Y" Margin="12,0,6,0"/>
+            <TextBox   x:Name="TbY" Grid.Column="4"/>
+            <Button    x:Name="BtnPick" Grid.Column="6" Content="Pick location"
+                       Height="23" Click="BtnPick_Click"/>
+          </Grid>
+        </StackPanel>
+      </GroupBox>
+
+      <!-- hotkeys: fixed label columns keep both key buttons on shared edges -->
+      <GroupBox Header="Hotkeys">
+        <Grid>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="82"/><ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="18"/>
+            <ColumnDefinition Width="82"/><ColumnDefinition Width="*"/>
+          </Grid.ColumnDefinitions>
+          <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
+          </Grid.RowDefinitions>
+
+          <TextBlock Grid.Row="0" Grid.Column="0" Text="Start / stop"/>
+          <Button x:Name="BtnHkToggle" Grid.Row="0" Grid.Column="1" Content="F6"
+                  Height="24" Click="Hotkey_Click" Tag="toggle"/>
+          <TextBlock Grid.Row="0" Grid.Column="3" Text="Start only"/>
+          <Button x:Name="BtnHkStart" Grid.Row="0" Grid.Column="4" Content="F7"
+                  Height="24" Click="Hotkey_Click" Tag="start"/>
+
+          <TextBlock Grid.Row="1" Grid.Column="0" Text="Stop only" Margin="0,8,0,0"/>
+          <Button x:Name="BtnHkStop" Grid.Row="1" Grid.Column="1" Content="F8"
+                  Height="24" Margin="0,8,0,0" Click="Hotkey_Click" Tag="stop"/>
+          <TextBlock Grid.Row="1" Grid.Column="3" Text="Pick point" Margin="0,8,0,0"/>
+          <Button x:Name="BtnHkPick" Grid.Row="1" Grid.Column="4" Content="F9"
+                  Height="24" Margin="0,8,0,0" Click="Hotkey_Click" Tag="pick"/>
+        </Grid>
+      </GroupBox>
+
+    </StackPanel>
+  </DockPanel>
+</Window>

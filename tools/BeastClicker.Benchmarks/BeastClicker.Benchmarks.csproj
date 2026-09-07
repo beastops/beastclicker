@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <AssemblyName>BeastClicker.Benchmarks</AssemblyName>
+    <RootNamespace>BeastClicker</RootNamespace>
+    <Platforms>x64</Platforms>
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Linked rather than referenced: the app is a WinExe, and linking the one
+         engine file keeps the harness exercising the real scheduler without
+         dragging the whole WPF assembly in. -->
+    <Compile Include="..\..\src\BeastClicker\Engine\ClickEngine.cs" Link="ClickEngine.cs" />
+  </ItemGroup>
+
+</Project>

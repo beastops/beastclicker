@@ -1,0 +1,31 @@
+# Build output
+bin/
+obj/
+dist/
+dist-standalone/
+build/
+
+# Signing material — never commit a private key
+*.pfx
+*.snk
+[Rr]elease/
+[Dd]ebug/
+*.user
+*.suo
+
+# Publish
+publish/
+*.publishsettings
+
+# Rider / Visual Studio
+.vs/
+.idea/
+*.DotSettings.user
+
+# Local app state (written to %APPDATA%, but never commit a stray copy)
+config.json
+
+# OS noise
+Thumbs.db
+desktop.ini
+.DS_Store

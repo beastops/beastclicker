@@ -1,0 +1,70 @@
+name: release
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to release (e.g. v3.1.0)'
+        required: true
+
+jobs:
+  release:
+    runs-on: windows-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Publish framework-dependent build
+        run: >
+          dotnet publish src/BeastClicker
+          -c Release -r win-x64
+          --self-contained false
+          -p:PublishSingleFile=true
+          -p:DebugType=none
+          -o dist
+
+      - name: Publish standalone build (runtime included)
+        run: >
+          dotnet publish src/BeastClicker
+          -c Release -r win-x64
+          --self-contained true
+          -p:PublishSingleFile=true
+          -p:EnableCompressionInSingleFile=true
+          -p:IncludeNativeLibrariesForSelfExtract=true
+          -p:DebugType=none
+          -o dist-standalone
+        # IncludeNativeLibrariesForSelfExtract matters here: without it WPF's
+        # native DLLs sit beside the exe instead of inside it.
+
+      - name: Name the standalone build distinctly
+        run: Move-Item dist-standalone/BeastClicker.exe dist/BeastClicker-Standalone.exe
+        shell: pwsh
+
+      - name: Build MSIX
+        run: pwsh tools/make-msix.ps1
+        shell: pwsh
+
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event.inputs.tag || github.ref_name }}
+          generate_release_notes: true
+          files: |
+            dist/BeastClicker-Standalone.exe
+            dist/BeastClicker.exe
+            dist/BeastClicker.msix
+            dist/BeastClicker.cer
+
+# Note: the MSIX is signed with a certificate generated on the runner, so its
+# thumbprint differs every build. That is fine for a self-signed package, since
+# users must trust the accompanying .cer either way, but it means the certificate is
+# not stable across releases. A real CA certificate would fix that and remove the
+# trust step entirely.
