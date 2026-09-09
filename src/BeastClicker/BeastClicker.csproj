@@ -24,7 +24,7 @@
        unsigned binary with blank publisher fields worse than an unsigned one
        that at least says who built it and what it is. -->
   <PropertyGroup Label="Metadata">
-    <Version>3.1.0</Version>
+    <Version>3.2.0</Version>
     <Product>Beast Clicker</Product>
     <AssemblyTitle>Beast Clicker</AssemblyTitle>
     <Description>A precise, low-overhead auto clicker for Windows.</Description>

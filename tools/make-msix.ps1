@@ -17,12 +17,28 @@
 param(
     [string]$Publisher = 'CN=beastops',
     [string]$PublisherDisplay = 'beastops',
-    [string]$Version = '3.1.0.0',
+    [string]$Version,
     [string]$Root = (Resolve-Path (Join-Path $PSScriptRoot '..'))
 )
 
 Add-Type -AssemblyName System.Drawing
 $ErrorActionPreference = 'Stop'
+
+# The package version follows the csproj rather than being repeated here. A
+# second copy of the number is how a release ends up shipping an MSIX still
+# labelled with the previous version: the bump gets made in one place and missed
+# in the other. MSIX wants four parts and the project gives three, so the
+# revision is pinned at 0. Pass -Version to override.
+if (-not $Version) {
+    $csproj = Join-Path $Root 'src\BeastClicker\BeastClicker.csproj'
+    $m = [regex]::Match((Get-Content $csproj -Raw),
+                        '<Version>\s*([0-9]+(?:\.[0-9]+){1,2})\s*</Version>')
+    if (-not $m.Success) { throw "could not read <Version> from $csproj" }
+    $parts = [System.Collections.ArrayList]@($m.Groups[1].Value.Split('.'))
+    while ($parts.Count -lt 4) { [void]$parts.Add('0') }
+    $Version = $parts -join '.'
+    Write-Host "version $Version (read from BeastClicker.csproj)"
+}
 
 $sdk = Get-ChildItem 'C:\Program Files (x86)\Windows Kits\10\bin' -Recurse -Filter 'makeappx.exe' -ErrorAction SilentlyContinue |
        Where-Object { $_.FullName -match '\\x64\\' } | Sort-Object FullName -Descending | Select-Object -First 1

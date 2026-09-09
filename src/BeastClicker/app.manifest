@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <assembly manifestVersion="1.0" xmlns="urn:schemas-microsoft-com:asm.v1">
-  <assemblyIdentity version="3.0.0.0" name="BeastClicker.app" />
+  <!-- Side-by-side assembly identity. Nothing reads it for an app like this one:
+       the version Explorer and Windows report comes from the csproj, which is why
+       this sat at 3.0.0.0 for two releases without anyone noticing. Kept in step
+       anyway, because a stale number here is misleading to read. -->
+  <assemblyIdentity version="3.2.0.0" name="BeastClicker.app" />
 
   <compatibility xmlns="urn:schemas-microsoft-com:compatibility.v1">
     <application>
