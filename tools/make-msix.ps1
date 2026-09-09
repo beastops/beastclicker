@@ -15,8 +15,8 @@
 #>
 [CmdletBinding()]
 param(
-    [string]$Publisher = 'CN=zbeastcorp',
-    [string]$PublisherDisplay = 'zbeastcorp',
+    [string]$Publisher = 'CN=beastops',
+    [string]$PublisherDisplay = 'beastops',
     [string]$Version = '3.1.0.0',
     [string]$Root = (Resolve-Path (Join-Path $PSScriptRoot '..'))
 )
@@ -78,7 +78,7 @@ $manifest = @"
   xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
   IgnorableNamespaces="uap rescap">
 
-  <Identity Name="ZBeastCorp.BeastClicker"
+  <Identity Name="BeastOps.BeastClicker"
             Publisher="$Publisher"
             Version="$Version"
             ProcessorArchitecture="x64" />
