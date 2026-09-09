@@ -1,0 +1,18 @@
+# Language statistics
+#
+# GitHub's language bar counts every tracked file, which put this repository at
+# roughly half PowerShell. None of that PowerShell is in the application: it is
+# all under tools/, and it builds the MSIX, draws the icon, banner and social
+# card, captures the demo and encodes the GIF. The program itself is C# and XAML
+# with no PowerShell in it at all, so the bar was describing the build tooling
+# rather than the thing people download.
+#
+# linguist-detectable=false is the attribute meant for this. It says "leave these
+# out of the statistics" without the dishonesty of linguist-vendored, which would
+# claim the scripts are third-party code, or linguist-generated, which would claim
+# nothing wrote them by hand. The files stay in the repository, stay syntax
+# highlighted, and stay searchable — they simply stop being counted.
+#
+# Only the scripts are excluded, not all of tools/. tools/BeastClicker.Benchmarks
+# is real C# that this project owns and it should keep counting toward the bar.
+tools/*.ps1 linguist-detectable=false
