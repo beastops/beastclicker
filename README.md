@@ -98,7 +98,7 @@ downloads folder to the exact commit and workflow run that built it, which is so
 you can check rather than take my word for.
 
 ```bash
-gh attestation verify BeastClicker.exe --repo zbeastcorp/beastclicker
+gh attestation verify BeastClicker.exe --repo beastops/beastclicker
 ```
 
 Antivirus false positives do happen to auto clickers. Synthesising mouse input looks the
