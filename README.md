@@ -90,6 +90,23 @@ Microsoft Store signing. This project has neither.
 SmartScreen may warn you, because the executable is not code signed. More info, then Run
 anyway. Removing that warning needs a paid code signing certificate.
 
+### Verifying a download
+
+Every release ships `SHA256SUMS.txt`, and each binary carries a GitHub build
+attestation. The attestation is the stronger of the two: it ties the file in your
+downloads folder to the exact commit and workflow run that built it, which is something
+you can check rather than take my word for.
+
+```bash
+gh attestation verify BeastClicker.exe --repo zbeastcorp/beastclicker
+```
+
+Antivirus false positives do happen to auto clickers. Synthesising mouse input looks the
+same to a heuristic whether the program doing it is a clicker or a keylogger, and a
+compressed single file build looks like a self extracting archive because that is exactly
+what it is. If a scanner flags a release binary, the attestation shows where it came
+from, and it is worth reporting to the vendor as a false positive.
+
 ## How it works
 
 Every click is one `SendInput` call carrying both the press and the release. Windows
