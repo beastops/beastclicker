@@ -14,11 +14,16 @@ jobs:
     runs-on: windows-latest
     permissions:
       contents: write
+      # Provenance attestation: lets anyone verify a downloaded binary was built
+      # by this workflow from this commit, which is the only claim about an
+      # unsigned executable that a user can actually check for themselves.
+      id-token: write
+      attestations: write
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-dotnet@v4
+      - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: '10.0.x'
 
@@ -52,8 +57,25 @@ jobs:
         run: pwsh tools/make-msix.ps1
         shell: pwsh
 
+      - name: Attest build provenance
+        uses: actions/attest-build-provenance@v4
+        with:
+          subject-path: |
+            dist/BeastClicker.exe
+            dist/BeastClicker-Standalone.exe
+            dist/BeastClicker.msix
+
+      - name: Write checksums
+        shell: pwsh
+        run: |
+          Get-ChildItem dist -Include BeastClicker*.exe,BeastClicker.msix -Recurse |
+            Get-FileHash -Algorithm SHA256 |
+            ForEach-Object { '{0}  {1}' -f $_.Hash.ToLower(), (Split-Path $_.Path -Leaf) } |
+            Set-Content dist/SHA256SUMS.txt -Encoding ascii
+          Get-Content dist/SHA256SUMS.txt
+
       - name: Publish release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ github.event.inputs.tag || github.ref_name }}
           generate_release_notes: true
@@ -62,6 +84,7 @@ jobs:
             dist/BeastClicker.exe
             dist/BeastClicker.msix
             dist/BeastClicker.cer
+            dist/SHA256SUMS.txt
 
 # Note: the MSIX is signed with a certificate generated on the runner, so its
 # thumbprint differs every build. That is fine for a self-signed package, since

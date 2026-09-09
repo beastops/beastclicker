@@ -27,8 +27,17 @@ public sealed class AppConfig
     public string HkStop { get; set; } = "F8";
     public string HkPick { get; set; } = "F9";
 
+    /// <summary>
+    /// Slowest rate the UI will hand the engine. The engine itself floors at
+    /// 0.1 ms for benchmark use, but an empty set of interval boxes reads as zero,
+    /// and without a floor here that silently means ten thousand clicks a second.
+    /// One millisecond is the fastest rate the README documents, and past a few
+    /// hundred a second the limit is the target program's input queue anyway.
+    /// </summary>
+    public const double MinIntervalMs = 1.0;
+
     public double IntervalMs =>
-        Math.Max(Hours * 3_600_000 + Minutes * 60_000 + Seconds * 1000 + Millis, 0.1);
+        Math.Max(Hours * 3_600_000 + Minutes * 60_000 + Seconds * 1000 + Millis, MinIntervalMs);
 
     private static readonly JsonSerializerOptions Opts = new() { WriteIndented = true };
 

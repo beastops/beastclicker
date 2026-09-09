@@ -22,6 +22,12 @@ public partial class MainWindow : Window
     private string? _capturing;
     private bool _loading = true;
 
+    /// <summary>
+    /// Set while a hotkey binding is genuinely broken. Kept separate from toast
+    /// text so a passing "Settings saved" cannot retire a real warning early.
+    /// </summary>
+    private string? _persistentWarn;
+
     private static readonly Regex NumericOnly = new(@"^[0-9]*$", RegexOptions.Compiled);
 
     public MainWindow()
@@ -35,6 +41,11 @@ public partial class MainWindow : Window
         Loaded += OnLoaded;
         Closed += OnClosed;
         PreviewKeyDown += OnPreviewKeyDown;
+
+        // Capturing a rebind unregisters every global hotkey so the next keypress
+        // can be read. Any exit that is not a keypress has to put them back.
+        PreviewMouseDown += (_, _) => CancelCapture();
+        Deactivated += (_, _) => CancelCapture();
 
         foreach (var tb in new[] { TbHours, TbMinutes, TbSeconds, TbMillis, TbRepeat, TbX, TbY })
         {
@@ -134,10 +145,12 @@ public partial class MainWindow : Window
 
     private void UpdateCps()
     {
+        // Same floor the config applies, so the preview cannot advertise a rate
+        // the engine will never be asked for.
         double ms = Math.Max(
             Read(TbHours) * 3_600_000 + Read(TbMinutes) * 60_000
             + Read(TbSeconds) * 1000 + Read(TbMillis),
-            0.1);
+            AppConfig.MinIntervalMs);
         double cps = 1000.0 / ms;
         CpsPreview.Text = cps >= 100 ? $"{cps:N0} clicks/sec" : $"{cps:N1} clicks/sec";
 
@@ -168,15 +181,29 @@ public partial class MainWindow : Window
         Bind(_cfg.HkStop, StopClicking);
         Bind(_cfg.HkPick, CapturePickLocation);
 
-        if (failed.Count > 0)
-        {
-            LblWarn.Text = $"Windows refused {string.Join(", ", failed)} — another app already owns them.";
-            LblWarn.Visibility = Visibility.Visible;
-        }
-        else
-        {
-            LblWarn.Visibility = Visibility.Collapsed;
-        }
+        _persistentWarn = failed.Count > 0
+            ? $"Windows refused {string.Join(", ", failed)} — another app already owns them."
+            : null;
+        ShowPersistentWarn();
+    }
+
+    /// <summary>
+    /// Abandons an in-progress rebind and restores the global hotkeys. Without
+    /// this, clicking away or alt-tabbing to the game mid-capture leaves every
+    /// hotkey unregistered — including stop — while the engine is still clicking.
+    /// </summary>
+    private void CancelCapture()
+    {
+        if (_capturing is null) return;
+        _capturing = null;
+        ApplyConfigToUi(_cfg);
+        RegisterHotkeys();
+    }
+
+    private void ShowPersistentWarn()
+    {
+        LblWarn.Text = _persistentWarn ?? "";
+        LblWarn.Visibility = _persistentWarn is null ? Visibility.Collapsed : Visibility.Visible;
     }
 
     private void Hotkey_Click(object sender, RoutedEventArgs e)
@@ -195,9 +222,7 @@ public partial class MainWindow : Window
 
         if (e.Key == Key.Escape)
         {
-            _capturing = null;
-            ApplyConfigToUi(_cfg);
-            RegisterHotkeys();
+            CancelCapture();
             return;
         }
 
@@ -335,7 +360,7 @@ public partial class MainWindow : Window
         _toast.Tick += (_, _) =>
         {
             _toast!.Stop();
-            LblWarn.Visibility = Visibility.Collapsed;
+            ShowPersistentWarn();
         };
         _toast.Start();
     }

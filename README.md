@@ -4,10 +4,10 @@
 
 ### A precise, low-overhead auto clicker for Windows
 
-[![Release](https://img.shields.io/github/v/release/zbeastcorp/beastclicker?style=flat-square&color=2f7de1)](https://github.com/zbeastcorp/beastclicker/releases/latest)
-[![Downloads](https://img.shields.io/github/downloads/zbeastcorp/beastclicker/total?style=flat-square&color=2f7de1)](https://github.com/zbeastcorp/beastclicker/releases)
-[![Build](https://img.shields.io/github/actions/workflow/status/zbeastcorp/beastclicker/build.yml?style=flat-square)](https://github.com/zbeastcorp/beastclicker/actions)
-[![License](https://img.shields.io/github/license/zbeastcorp/beastclicker?style=flat-square&color=2f7de1)](LICENSE)
+[![Release](https://img.shields.io/github/v/release/beastops/beastclicker?style=flat-square&color=2f7de1)](https://github.com/beastops/beastclicker/releases/latest)
+[![Downloads](https://img.shields.io/github/downloads/beastops/beastclicker/total?style=flat-square&color=2f7de1)](https://github.com/beastops/beastclicker/releases)
+[![Build](https://img.shields.io/github/actions/workflow/status/beastops/beastclicker/build.yml?style=flat-square)](https://github.com/beastops/beastclicker/actions)
+[![License](https://img.shields.io/github/license/beastops/beastclicker?style=flat-square&color=2f7de1)](LICENSE)
 ![Platform](https://img.shields.io/badge/platform-Windows%2010%20%7C%2011-2f7de1?style=flat-square)
 
 </div>
@@ -90,6 +90,23 @@ Microsoft Store signing. This project has neither.
 SmartScreen may warn you, because the executable is not code signed. More info, then Run
 anyway. Removing that warning needs a paid code signing certificate.
 
+### Verifying a download
+
+Every release ships `SHA256SUMS.txt`, and each binary carries a GitHub build
+attestation. The attestation is the stronger of the two: it ties the file in your
+downloads folder to the exact commit and workflow run that built it, which is something
+you can check rather than take my word for.
+
+```bash
+gh attestation verify BeastClicker.exe --repo beastops/beastclicker
+```
+
+Antivirus false positives do happen to auto clickers. Synthesising mouse input looks the
+same to a heuristic whether the program doing it is a clicker or a keylogger, and a
+compressed single file build looks like a self extracting archive because that is exactly
+what it is. If a scanner flags a release binary, the attestation shows where it came
+from, and it is worth reporting to the vendor as a false positive.
+
 ## How it works
 
 Every click is one `SendInput` call carrying both the press and the release. Windows
@@ -113,6 +130,11 @@ For the waiting itself, `CreateWaitableTimerEx` with `CREATE_WAITABLE_TIMER_HIGH
 parks the thread until just before the deadline, and only the last fraction of a
 millisecond gets spun. The engine thread runs at `AboveNormal` rather than `Highest`, on
 purpose, so it never outranks the threads of whatever you are actually using.
+
+On two cores or fewer that spin is dropped altogether. It is worth a sliver of a core
+when there are cores to spare, and not worth it when the thread it competes with belongs
+to the program being clicked, so those machines take the timer's own half millisecond of
+slop instead.
 
 Worth recording: `timeBeginPeriod(1)` is called but not trusted. In testing it returned
 success while the calling thread still got 15.6 ms granularity, so the schedule works
@@ -163,7 +185,7 @@ touched. `watch` is how I measured the 57 clicks a second figure at the top.
 ## Build
 
 ```bash
-git clone https://github.com/zbeastcorp/beastclicker.git
+git clone https://github.com/beastops/beastclicker.git
 cd beastclicker
 dotnet build -c Release
 ```
