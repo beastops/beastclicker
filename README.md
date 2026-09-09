@@ -114,6 +114,11 @@ parks the thread until just before the deadline, and only the last fraction of a
 millisecond gets spun. The engine thread runs at `AboveNormal` rather than `Highest`, on
 purpose, so it never outranks the threads of whatever you are actually using.
 
+On two cores or fewer that spin is dropped altogether. It is worth a sliver of a core
+when there are cores to spare, and not worth it when the thread it competes with belongs
+to the program being clicked, so those machines take the timer's own half millisecond of
+slop instead.
+
 Worth recording: `timeBeginPeriod(1)` is called but not trusted. In testing it returned
 success while the calling thread still got 15.6 ms granularity, so the schedule works
 whether or not it takes effect.
