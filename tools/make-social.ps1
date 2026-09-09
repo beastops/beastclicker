@@ -122,7 +122,7 @@ foreach ($s in $stats) {
     $sx += 196
 }
 
-$g.DrawString('github.com/zbeastcorp/beastclicker', $fUrl, $tag, [float]$x, 502.0)
+$g.DrawString('github.com/beastops/beastclicker', $fUrl, $tag, [float]$x, 502.0)
 
 $g.Dispose()
 $bmp.Save($Out, [System.Drawing.Imaging.ImageFormat]::Png)

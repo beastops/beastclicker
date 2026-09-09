@@ -4,10 +4,10 @@
 
 ### A precise, low-overhead auto clicker for Windows
 
-[![Release](https://img.shields.io/github/v/release/zbeastcorp/beastclicker?style=flat-square&color=2f7de1)](https://github.com/zbeastcorp/beastclicker/releases/latest)
-[![Downloads](https://img.shields.io/github/downloads/zbeastcorp/beastclicker/total?style=flat-square&color=2f7de1)](https://github.com/zbeastcorp/beastclicker/releases)
-[![Build](https://img.shields.io/github/actions/workflow/status/zbeastcorp/beastclicker/build.yml?style=flat-square)](https://github.com/zbeastcorp/beastclicker/actions)
-[![License](https://img.shields.io/github/license/zbeastcorp/beastclicker?style=flat-square&color=2f7de1)](LICENSE)
+[![Release](https://img.shields.io/github/v/release/beastops/beastclicker?style=flat-square&color=2f7de1)](https://github.com/beastops/beastclicker/releases/latest)
+[![Downloads](https://img.shields.io/github/downloads/beastops/beastclicker/total?style=flat-square&color=2f7de1)](https://github.com/beastops/beastclicker/releases)
+[![Build](https://img.shields.io/github/actions/workflow/status/beastops/beastclicker/build.yml?style=flat-square)](https://github.com/beastops/beastclicker/actions)
+[![License](https://img.shields.io/github/license/beastops/beastclicker?style=flat-square&color=2f7de1)](LICENSE)
 ![Platform](https://img.shields.io/badge/platform-Windows%2010%20%7C%2011-2f7de1?style=flat-square)
 
 </div>
@@ -185,7 +185,7 @@ touched. `watch` is how I measured the 57 clicks a second figure at the top.
 ## Build
 
 ```bash
-git clone https://github.com/zbeastcorp/beastclicker.git
+git clone https://github.com/beastops/beastclicker.git
 cd beastclicker
 dotnet build -c Release
 ```

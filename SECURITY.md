@@ -33,7 +33,7 @@ README recommends it.
 ## Reporting something
 
 Open an issue. For anything you would rather not post publicly, use GitHub's
-[private vulnerability reporting](https://github.com/zbeastcorp/beastclicker/security/advisories/new).
+[private vulnerability reporting](https://github.com/beastops/beastclicker/security/advisories/new).
 
 ## Out of scope
 
