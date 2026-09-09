@@ -11,6 +11,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{07C2787E
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeastClicker.Benchmarks", "tools\BeastClicker.Benchmarks\BeastClicker.Benchmarks.csproj", "{42CC91BE-3555-4797-AD32-BFA2A57E07A0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeastClicker.Tools", "tools\BeastClicker.Tools\BeastClicker.Tools.csproj", "{9482E10A-C382-475E-9BD9-85BB07E8BA95}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,18 @@ Global
 		{42CC91BE-3555-4797-AD32-BFA2A57E07A0}.Release|x64.Build.0 = Release|x64
 		{42CC91BE-3555-4797-AD32-BFA2A57E07A0}.Release|x86.ActiveCfg = Release|x64
 		{42CC91BE-3555-4797-AD32-BFA2A57E07A0}.Release|x86.Build.0 = Release|x64
+		{9482E10A-C382-475E-9BD9-85BB07E8BA95}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{9482E10A-C382-475E-9BD9-85BB07E8BA95}.Debug|Any CPU.Build.0 = Debug|x64
+		{9482E10A-C382-475E-9BD9-85BB07E8BA95}.Debug|x64.ActiveCfg = Debug|x64
+		{9482E10A-C382-475E-9BD9-85BB07E8BA95}.Debug|x64.Build.0 = Debug|x64
+		{9482E10A-C382-475E-9BD9-85BB07E8BA95}.Debug|x86.ActiveCfg = Debug|x64
+		{9482E10A-C382-475E-9BD9-85BB07E8BA95}.Debug|x86.Build.0 = Debug|x64
+		{9482E10A-C382-475E-9BD9-85BB07E8BA95}.Release|Any CPU.ActiveCfg = Release|x64
+		{9482E10A-C382-475E-9BD9-85BB07E8BA95}.Release|Any CPU.Build.0 = Release|x64
+		{9482E10A-C382-475E-9BD9-85BB07E8BA95}.Release|x64.ActiveCfg = Release|x64
+		{9482E10A-C382-475E-9BD9-85BB07E8BA95}.Release|x64.Build.0 = Release|x64
+		{9482E10A-C382-475E-9BD9-85BB07E8BA95}.Release|x86.ActiveCfg = Release|x64
+		{9482E10A-C382-475E-9BD9-85BB07E8BA95}.Release|x86.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -52,5 +66,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{110AA409-A216-4405-B7D4-E38D9D432061} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{42CC91BE-3555-4797-AD32-BFA2A57E07A0} = {07C2787E-EAC7-C090-1BA3-A61EC2A24D84}
+		{9482E10A-C382-475E-9BD9-85BB07E8BA95} = {07C2787E-EAC7-C090-1BA3-A61EC2A24D84}
 	EndGlobalSection
 EndGlobal

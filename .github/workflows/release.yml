@@ -54,8 +54,7 @@ jobs:
         shell: pwsh
 
       - name: Build MSIX
-        run: pwsh tools/make-msix.ps1
-        shell: pwsh
+        run: dotnet run --project tools/BeastClicker.Tools -c Release -- msix
 
       - name: Attest build provenance
         uses: actions/attest-build-provenance@v4

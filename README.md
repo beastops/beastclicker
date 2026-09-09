@@ -198,8 +198,17 @@ dotnet publish src/BeastClicker -c Release -r win-x64 --self-contained true \
   -p:IncludeNativeLibrariesForSelfExtract=true -o dist-standalone
 ```
 
-Scripts under `tools/` regenerate the icon, the README artwork, the social card and
-the MSIX.
+`tools/BeastClicker.Tools` regenerates the repository's own assets. Each command
+overwrites the file it names, so run only the one you mean:
+
+```bash
+dotnet run --project tools/BeastClicker.Tools -- icon
+```
+
+`icon` rebuilds the app icon, `social` the link preview card, `banner` the animated
+README hero, `demo` re-records the demo GIF from the running app, and `msix` builds
+and signs the package. `demo` drives the app through its global hotkeys and takes a
+few minutes to encode.
 
 ## Before you use it
 
