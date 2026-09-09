@@ -187,15 +187,33 @@ public sealed class ClickEngine : IDisposable
     };
 
     [ThreadStatic] private static Random? _rng;
+    [ThreadStatic] private static double _spareGauss;
+    [ThreadStatic] private static bool _hasSpareGauss;
     private static Random Rng => _rng ??= new Random();
 
-    /// <summary>Standard normal via Box-Muller.</summary>
+    /// <summary>
+    /// Standard normal via Box-Muller. The transform produces two independent
+    /// normals from each pair of uniforms, so the second is kept for the next
+    /// call rather than discarded — at a thousand clicks a second that halves the
+    /// log, sqrt and trig work in the only per-click computation there is.
+    /// Thread-static, so a fresh engine thread always starts without a stale spare.
+    /// </summary>
     private static double Gauss()
     {
+        if (_hasSpareGauss)
+        {
+            _hasSpareGauss = false;
+            return _spareGauss;
+        }
+
         double u = 0;
         while (u == 0) u = Rng.NextDouble();
-        double v = Rng.NextDouble();
-        return Math.Sqrt(-2.0 * Math.Log(u)) * Math.Cos(2.0 * Math.PI * v);
+        double magnitude = Math.Sqrt(-2.0 * Math.Log(u));
+        (double sin, double cos) = Math.SinCos(2.0 * Math.PI * Rng.NextDouble());
+
+        _spareGauss = magnitude * sin;
+        _hasSpareGauss = true;
+        return magnitude * cos;
     }
 
     private static double Clamp(double x, double lo, double hi) => x < lo ? lo : x > hi ? hi : x;
@@ -342,7 +360,9 @@ public sealed class ClickEngine : IDisposable
         }
         catch (Exception ex)
         {
-            Error?.Invoke(ex.Message);
+            // Subscribers marshal to the UI dispatcher, which throws once it is
+            // shutting down. See the note on Finished below.
+            try { Error?.Invoke(ex.Message); } catch { /* nothing left to report to */ }
         }
         finally
         {
@@ -361,7 +381,11 @@ public sealed class ClickEngine : IDisposable
             if (Volatile.Read(ref _generation) == gen)
             {
                 _running = false;
-                Finished?.Invoke();
+                // This is a finally on a background thread, so an exception here
+                // escapes unhandled and takes the process with it. The subscriber
+                // marshals to the UI dispatcher, which throws if the window is
+                // closing at the moment the last run ends — a crash on exit.
+                try { Finished?.Invoke(); } catch { /* the UI is already gone */ }
             }
         }
     }

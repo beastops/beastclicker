@@ -145,10 +145,12 @@ public partial class MainWindow : Window
 
     private void UpdateCps()
     {
+        // Same floor the config applies, so the preview cannot advertise a rate
+        // the engine will never be asked for.
         double ms = Math.Max(
             Read(TbHours) * 3_600_000 + Read(TbMinutes) * 60_000
             + Read(TbSeconds) * 1000 + Read(TbMillis),
-            0.1);
+            AppConfig.MinIntervalMs);
         double cps = 1000.0 / ms;
         CpsPreview.Text = cps >= 100 ? $"{cps:N0} clicks/sec" : $"{cps:N1} clicks/sec";
 
