@@ -67,10 +67,15 @@ jobs:
       - name: Write checksums
         shell: pwsh
         run: |
-          Get-ChildItem dist -Include BeastClicker*.exe,BeastClicker.msix -Recurse |
+          $lines = Get-ChildItem dist -Include BeastClicker*.exe,BeastClicker.msix -Recurse |
             Get-FileHash -Algorithm SHA256 |
-            ForEach-Object { '{0}  {1}' -f $_.Hash.ToLower(), (Split-Path $_.Path -Leaf) } |
-            Set-Content dist/SHA256SUMS.txt -Encoding ascii
+            ForEach-Object { '{0}  {1}' -f $_.Hash.ToLower(), (Split-Path $_.Path -Leaf) }
+          # Written with LF explicitly. Set-Content ends lines with CRLF on
+          # Windows, and sha256sum -c on Linux and macOS reads the trailing CR as
+          # part of the filename, so every entry comes back as missing. 3.2.0
+          # shipped a checksum file that verified nothing for exactly this reason.
+          [System.IO.File]::WriteAllText(
+            (Join-Path (Get-Location) 'dist/SHA256SUMS.txt'), ($lines -join "`n") + "`n")
           Get-Content dist/SHA256SUMS.txt
 
       - name: Publish release
